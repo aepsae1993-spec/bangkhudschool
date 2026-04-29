@@ -85,24 +85,66 @@ npm run dev                         # เปิด http://localhost:3000
 
 ---
 
-## 5) โครงสร้างโปรเจกต์
+## 5) ระบบ Admin Panel
+
+เข้าใช้งานที่ `/admin` (หรือ `/admin/login`)
+
+### วิธีสร้างบัญชี Admin
+1. ไปที่ Supabase → **Authentication → Users → Add user**
+2. ใส่ Email + Password แล้วกด **Create user**
+3. เข้าเว็บ `/admin/login` แล้ว login ด้วย email/password นั้น
+
+### ฟีเจอร์ Admin
+| หน้า | ทำอะไรได้ |
+|------|-----------|
+| `/admin/dashboard` | ดูสถิติภาพรวม |
+| `/admin/settings` | แก้ชื่อโรงเรียน, ปรัชญา, ที่อยู่, เบอร์, อีเมล, Facebook, Maps |
+| `/admin/news` | เพิ่ม/แก้ไข/ลบข่าวสาร + อัปโหลดรูปปก |
+| `/admin/gallery` | เพิ่ม/แก้ไข/ลบภาพกิจกรรม (ใช้ Google Drive File ID) |
+| `/admin/teachers` | เพิ่ม/แก้ไข/ลบบุคลากร + อัปโหลดรูปถ่าย |
+
+### วิธีเพิ่มรูปใน Gallery
+1. อัปโหลดรูปขึ้น Google Drive (โฟลเดอร์ที่ตั้งใน Apps Script)
+2. คลิกขวาที่ไฟล์ → **Get link** → คัดลอก File ID จาก URL
+   `https://drive.google.com/file/d/**FILE_ID**/view`
+3. ไปที่ `/admin/gallery` → กด "เพิ่มรูปใหม่" → วาง File ID
+4. เว็บจะโชว์ preview อัตโนมัติ
+
+---
+
+## 6) โครงสร้างโปรเจกต์
 
 ```
 app/
-  page.tsx              หน้าแรก (Hero, สถิติ, จุดเด่น, ข่าว, CTA)
-  about/page.tsx        เกี่ยวกับโรงเรียน + Timeline
-  news/page.tsx         รายการข่าว
-  news/[slug]/page.tsx  รายละเอียดข่าว
-  gallery/page.tsx      ภาพกิจกรรม (ดึงจาก Supabase + Google Drive)
-  teachers/page.tsx     บุคลากร แยกตามฝ่าย
-  contact/page.tsx      ติดต่อ + Google Maps embed
-components/             Navbar, Footer, Hero, NewsCard, GalleryGrid, ฯลฯ
+  page.tsx                  หน้าแรก (Hero, สถิติ, จุดเด่น, ข่าว, CTA)
+  about/page.tsx            เกี่ยวกับโรงเรียน + Timeline
+  news/page.tsx             รายการข่าว
+  news/[slug]/page.tsx      รายละเอียดข่าว
+  gallery/page.tsx          ภาพกิจกรรม (lightbox, Google Drive)
+  teachers/page.tsx         บุคลากร แยกตามฝ่าย
+  contact/page.tsx          ติดต่อ + Google Maps embed
+  admin/
+    layout.tsx              Admin shell (auth guard + sidebar)
+    login/page.tsx          หน้า login
+    dashboard/page.tsx      ภาพรวม + สถิติ
+    settings/page.tsx       ตั้งค่าเว็บไซต์
+    news/page.tsx           CRUD ข่าวสาร + อัปโหลดรูปปก
+    gallery/page.tsx        CRUD ภาพกิจกรรม (Drive File ID)
+    teachers/page.tsx       CRUD บุคลากร + อัปโหลดรูปถ่าย
+components/
+  Navbar, Footer, Hero, NewsCard, GalleryGrid, ...
+  admin/
+    AdminShell.tsx          Sidebar + layout สำหรับ admin
+    AdminCard.tsx           UI components (form inputs, buttons, toast)
+hooks/
+  useAdminAuth.ts           ตรวจสอบ Supabase session + redirect
 lib/
-  supabase.ts           สร้าง Supabase client + helper URL ของโลโก้
-  gdrive.ts             helper สำหรับเรียก Apps Script
-  data.ts               query ทั้งหมด + fallback content
-supabase/schema.sql     สคริปต์สร้างตารางและ RLS
-apps-script/Code.gs     Drive bridge (list/upload/thumb)
+  supabase.ts               Supabase client + logo URL helper
+  gdrive.ts                 Google Drive / Apps Script helpers
+  data.ts                   query functions + fallback content
+  types.ts                  TypeScript types
+supabase/schema.sql         สร้างตาราง, RLS policies, Storage bucket
+apps-script/Code.gs         Drive bridge (list/upload/thumb)
 ```
 
 ## 6) ทำไมถึง “ดูไฮโซ”

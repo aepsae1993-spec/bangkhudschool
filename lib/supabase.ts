@@ -31,9 +31,13 @@ export function getSupabaseAdmin(): SupabaseClient | null {
 
 /**
  * Build the public URL for the school logo stored in Supabase Storage.
- * Convention: bucket="public-assets", path="logo/school-logo.png"
+ * Priority:
+ *   1. NEXT_PUBLIC_LOGO_URL  — set this directly in Vercel to the full URL (simplest)
+ *   2. NEXT_PUBLIC_SUPABASE_URL — construct the URL from project URL
  */
 export function getLogoUrl(): string | null {
+  const direct = process.env.NEXT_PUBLIC_LOGO_URL;
+  if (direct) return direct;
   if (!url) return null;
   return `${url}/storage/v1/object/public/public-assets/logo/school-logo.png`;
 }

@@ -54,9 +54,18 @@ export default function Hero({
           initial={reduce ? {} : { opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-6 font-display text-4xl sm:text-5xl lg:text-7xl font-semibold leading-[1.05] max-w-4xl"
+          className="mt-6 font-display text-4xl sm:text-5xl lg:text-7xl font-semibold leading-[1.1] max-w-4xl"
         >
-          <span className="gold-text">{schoolName}</span>
+          {(() => {
+            const idx = schoolName.indexOf("(");
+            if (idx === -1) return <span className="gold-text">{schoolName}</span>;
+            return (
+              <>
+                <span className="gold-text block">{schoolName.slice(0, idx).trim()}</span>
+                <span className="gold-text block">{schoolName.slice(idx)}</span>
+              </>
+            );
+          })()}
         </motion.h1>
 
         {motto && (

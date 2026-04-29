@@ -22,6 +22,19 @@ on storage.objects for insert
 to authenticated
 with check (bucket_id = 'public-assets');
 
+-- อนุญาตให้ admin อัปเดต / ลบไฟล์ใน bucket
+drop policy if exists "auth update on public-assets" on storage.objects;
+create policy "auth update on public-assets"
+on storage.objects for update
+to authenticated
+using (bucket_id = 'public-assets');
+
+drop policy if exists "auth delete on public-assets" on storage.objects;
+create policy "auth delete on public-assets"
+on storage.objects for delete
+to authenticated
+using (bucket_id = 'public-assets');
+
 -- ============================================================
 -- 2) ตารางการตั้งค่าเว็บไซต์ (มีแถวเดียว)
 -- ============================================================
