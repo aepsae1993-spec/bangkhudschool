@@ -2,10 +2,17 @@
 
 เว็บไซต์ทางการของโรงเรียน — ออกแบบให้ดูหรู สมูท ลื่นไหล
 สร้างด้วย **Next.js 14 + TypeScript + Tailwind + Framer Motion**
-- ฐานข้อมูล: **Supabase** (Postgres + Storage)
-- ไฟล์/รูปกิจกรรม: **Google Drive** ผ่าน **Google Apps Script**
-- โลโก้โรงเรียน: เก็บใน **Supabase Storage** โดยตรง
+- ฐานข้อมูล: **Supabase** (Postgres + Storage เฉพาะโลโก้กับรูปครู)
+- รูปข่าว / รูปกิจกรรม: **Google Drive** ผ่าน **Google Apps Script**
 - Deploy: **GitHub → Vercel**
+
+### นโยบายการเก็บไฟล์
+| ประเภท | เก็บที่ | path / album |
+|---|---|---|
+| โลโก้โรงเรียน | Supabase Storage | `public-assets/logo/school-logo.png` |
+| รูปครู / บุคลากร | Supabase Storage | `public-assets/teachers/<timestamp>.<ext>` |
+| รูปปกข่าวสาร | Google Drive | โฟลเดอร์ `news-covers` |
+| รูปกิจกรรม (gallery) | Google Drive | โฟลเดอร์ตามอัลบั้ม |
 
 ---
 

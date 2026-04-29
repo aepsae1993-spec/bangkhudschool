@@ -92,17 +92,25 @@ export default function AdminNewsPage() {
   }
 
   async function uploadCover(file: File) {
-    const sb = getSupabase();
-    if (!sb) return;
     setUploading(true);
-    const ext = file.name.split(".").pop();
-    const path = `news/${Date.now()}.${ext}`;
-    const { error } = await sb.storage.from("public-assets").upload(path, file, { upsert: true });
-    if (error) { showToast("อัปโหลดไม่สำเร็จ: " + error.message, "err"); }
-    else {
-      const { data } = sb.storage.from("public-assets").getPublicUrl(path);
-      setForm((f) => ({ ...f, cover_url: data.publicUrl }));
-      showToast("อัปโหลดรูปปกสำเร็จ ✓", "ok");
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("album", "news-covers");
+
+      const res = await fetch("/api/drive-upload", {
+        method: "POST",
+        body: fd,
+      });
+      const data = await res.json();
+      if (!res.ok || !data.url) {
+        throw new Error(data.error || "อัปโหลดไม่สำเร็จ");
+      }
+      setForm((f) => ({ ...f, cover_url: data.url }));
+      showToast("อัปโหลดรูปปกขึ้น Drive สำเร็จ ✓", "ok");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "อัปโหลดไม่สำเร็จ";
+      showToast(msg, "err");
     }
     setUploading(false);
   }
@@ -170,23 +178,26 @@ export default function AdminNewsPage() {
 
             {/* Cover image */}
             <div>
-              <div className="flex items-center gap-3 mb-2">
+              <div className="flex items-center gap-3 mb-2 flex-wrap">
                 <span className="text-sm text-cream-100/80">รูปปกข่าว</span>
                 <button
                   type="button"
                   onClick={() => fileRef.current?.click()}
-                  className="text-xs text-gold-300 underline underline-offset-2 hover:text-gold-200"
+                  className="text-xs text-gold-300 underline underline-offset-2 hover:text-gold-200 disabled:opacity-50"
                   disabled={uploading}
                 >
-                  {uploading ? "กำลังอัปโหลด..." : "อัปโหลดจากเครื่อง"}
+                  {uploading ? "กำลังอัปโหลดขึ้น Drive..." : "อัปโหลดขึ้น Google Drive"}
                 </button>
+                <span className="text-[11px] text-cream-100/40">
+                  (ไฟล์เก็บที่ Drive โฟลเดอร์ <code className="text-gold-200/70">news-covers</code>)
+                </span>
                 <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) uploadCover(e.target.files[0]); }} />
               </div>
               <input
                 type="url"
                 value={form.cover_url}
                 onChange={(e) => set("cover_url", e.target.value)}
-                placeholder="https://... หรืออัปโหลดจากเครื่อง"
+                placeholder="https://... หรือกดอัปโหลดด้านบน"
                 className="w-full rounded-xl bg-ink-800/60 border border-white/10 px-4 py-2.5 text-sm text-cream-100 placeholder-cream-100/30 focus:outline-none focus:border-gold-300/60 transition"
               />
               {form.cover_url && (

@@ -3,7 +3,11 @@
 -- รันสคริปต์นี้ใน Supabase SQL Editor (ทั้งไฟล์)
 -- ============================================================
 
--- 1) Storage bucket สำหรับโลโก้และรูปสาธารณะอื่น ๆ
+-- 1) Storage bucket สำหรับโลโก้โรงเรียน และรูปครู
+--    (รูปข่าว/รูปกิจกรรม เก็บที่ Google Drive ผ่าน Apps Script)
+--    โครงสร้างที่ใช้:
+--      public-assets/logo/school-logo.png
+--      public-assets/teachers/<timestamp>.<ext>
 insert into storage.buckets (id, name, public)
 values ('public-assets', 'public-assets', true)
 on conflict (id) do nothing;
