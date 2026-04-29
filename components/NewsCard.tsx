@@ -67,7 +67,7 @@ export default function NewsCard({
       )}
 
       <Link
-        href={`/news/${item.slug}`}
+        href={`/news/${item.id}`}
         className="mt-5 inline-flex items-center gap-1.5 text-gold-300 text-sm hover:gap-3 transition-all"
         aria-label={`อ่านต่อ: ${item.title}`}
       >

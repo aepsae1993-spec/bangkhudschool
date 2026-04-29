@@ -6,6 +6,8 @@ import { getNewsBySlug } from "@/lib/data";
 
 // ดึงสด ๆ ทุกครั้ง — ป้องกันปัญหา 404 ตอนสร้างข่าวใหม่ที่ slug ยังไม่อยู่ใน static cache
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
 
 const fmt = (d: string) =>
   new Date(d).toLocaleDateString("th-TH", {

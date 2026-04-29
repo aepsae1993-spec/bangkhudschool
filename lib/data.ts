@@ -140,15 +140,45 @@ export async function getNews(limit = 9): Promise<NewsItem[]> {
   return (data as NewsItem[]) ?? FALLBACK_NEWS;
 }
 
-export async function getNewsBySlug(slug: string): Promise<NewsItem | null> {
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * รองรับ key ทั้ง slug (อ่านง่าย) และ UUID (ทนต่อปัญหา encoding ภาษาไทย)
+ */
+export async function getNewsBySlug(
+  slugOrId: string
+): Promise<NewsItem | null> {
   const sb = getSupabase();
-  if (!sb) return FALLBACK_NEWS.find((n) => n.slug === slug) ?? null;
-  const { data } = await sb
+  let key = slugOrId;
+  try {
+    key = decodeURIComponent(slugOrId);
+  } catch {
+    // ปล่อย key เดิม
+  }
+  key = key.trim();
+
+  if (!sb) return FALLBACK_NEWS.find((n) => n.slug === key) ?? null;
+
+  // 1) ลอง match ด้วย slug (พิมพ์ไทยอ่านสวย)
+  const slugRes = await sb
     .from("news")
     .select("*")
-    .eq("slug", slug)
+    .eq("slug", key)
     .maybeSingle();
-  return (data as NewsItem) ?? null;
+  if (slugRes.data) return slugRes.data as NewsItem;
+
+  // 2) ลอง match ด้วย UUID (สำรอง — กันปัญหา URL encoding)
+  if (UUID_RE.test(key)) {
+    const idRes = await sb
+      .from("news")
+      .select("*")
+      .eq("id", key)
+      .maybeSingle();
+    if (idRes.data) return idRes.data as NewsItem;
+  }
+
+  return null;
 }
 
 export async function getGallery(limit = 24): Promise<GalleryItem[]> {
