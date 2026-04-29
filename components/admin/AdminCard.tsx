@@ -1,12 +1,12 @@
-export function AdminCard({
-  children,
-  className = "",
-}: {
+type AdminCardProps = React.HTMLAttributes<HTMLDivElement> & {
   children: React.ReactNode;
-  className?: string;
-}) {
+};
+
+export function AdminCard({ children, className = "", ...rest }: AdminCardProps) {
   return (
-    <div className={`glass rounded-2xl p-6 ${className}`}>{children}</div>
+    <div {...rest} className={`glass rounded-2xl p-6 ${className}`}>
+      {children}
+    </div>
   );
 }
 

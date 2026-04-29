@@ -14,7 +14,17 @@ import {
   Toast,
 } from "@/components/admin/AdminCard";
 
-const EMPTY: Omit<Teacher, "id" | "created_at"> = {
+type Form = {
+  full_name: string;
+  position: string;
+  department: string;
+  email: string;
+  phone: string;
+  photo_url: string;
+  display_order: number;
+};
+
+const EMPTY: Form = {
   full_name: "",
   position: "",
   department: "",
@@ -23,7 +33,6 @@ const EMPTY: Omit<Teacher, "id" | "created_at"> = {
   photo_url: "",
   display_order: 100,
 };
-type Form = typeof EMPTY;
 
 const DEPTS = [
   "ฝ่ายบริหาร",

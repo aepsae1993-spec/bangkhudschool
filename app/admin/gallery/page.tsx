@@ -16,7 +16,16 @@ import {
   Toast,
 } from "@/components/admin/AdminCard";
 
-const EMPTY: Omit<GalleryItem, "id" | "created_at"> = {
+type Form = {
+  title: string;
+  description: string;
+  drive_file_id: string;
+  thumb_url: string;
+  album: string;
+  taken_at: string;
+};
+
+const EMPTY: Form = {
   title: "",
   description: "",
   drive_file_id: "",
@@ -24,7 +33,6 @@ const EMPTY: Omit<GalleryItem, "id" | "created_at"> = {
   album: "",
   taken_at: "",
 };
-type Form = typeof EMPTY;
 
 function DrivePreview({ fileId }: { fileId: string }) {
   const [err, setErr] = useState(false);
