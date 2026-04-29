@@ -41,6 +41,17 @@ export type SchoolAsset = {
   updated_at: string;
 };
 
+export type Classroom = {
+  id: string;
+  grade: string;
+  room: string;
+  male_count: number;
+  female_count: number;
+  teacher_name: string | null;
+  display_order: number;
+  created_at: string;
+};
+
 export type SiteSettings = {
   id: number;
   school_name: string;

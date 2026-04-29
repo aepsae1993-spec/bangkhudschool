@@ -9,7 +9,8 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: ["var(--font-prompt)", "ui-sans-serif", "system-ui"],
-        display: ["var(--font-playfair)", "serif"],
+        // Playfair สำหรับตัวอักษรลาตินดูหรู; Prompt fallback ให้ภาษาไทยอ่านได้ถูกต้อง
+        display: ["var(--font-playfair)", "var(--font-prompt)", "serif"],
       },
       colors: {
         ink: {

@@ -11,6 +11,7 @@ const NAV = [
   { href: "/about", label: "เกี่ยวกับโรงเรียน" },
   { href: "/news", label: "ข่าวสาร" },
   { href: "/gallery", label: "ภาพกิจกรรม" },
+  { href: "/students", label: "นักเรียน" },
   { href: "/teachers", label: "บุคลากร" },
   { href: "/contact", label: "ติดต่อ" },
 ];

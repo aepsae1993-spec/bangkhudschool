@@ -1,10 +1,28 @@
 import { getSupabase } from "./supabase";
 import type {
+  Classroom,
   GalleryItem,
   NewsItem,
   SiteSettings,
   Teacher,
 } from "./types";
+
+export const GRADE_ORDER = [
+  "อ.1",
+  "อ.2",
+  "อ.3",
+  "ป.1",
+  "ป.2",
+  "ป.3",
+  "ป.4",
+  "ป.5",
+  "ป.6",
+];
+
+export function gradeIndex(g: string) {
+  const i = GRADE_ORDER.indexOf(g);
+  return i === -1 ? 999 : i;
+}
 
 /* -------- Fallback content (used when Supabase env is missing) -------- */
 
@@ -139,6 +157,28 @@ export async function getGallery(limit = 24): Promise<GalleryItem[]> {
     .order("created_at", { ascending: false })
     .limit(limit);
   return (data as GalleryItem[]) ?? [];
+}
+
+const FALLBACK_CLASSROOMS: Classroom[] = [
+  { id: "c1", grade: "อ.2", room: "1", male_count: 12, female_count: 13, teacher_name: "ครูตัวอย่าง", display_order: 21, created_at: "" },
+  { id: "c2", grade: "อ.3", room: "1", male_count: 13, female_count: 12, teacher_name: "ครูตัวอย่าง", display_order: 31, created_at: "" },
+  { id: "c3", grade: "ป.1", room: "1", male_count: 15, female_count: 14, teacher_name: "ครูตัวอย่าง", display_order: 101, created_at: "" },
+  { id: "c4", grade: "ป.2", room: "1", male_count: 13, female_count: 14, teacher_name: "ครูตัวอย่าง", display_order: 201, created_at: "" },
+  { id: "c5", grade: "ป.3", room: "1", male_count: 14, female_count: 13, teacher_name: "ครูตัวอย่าง", display_order: 301, created_at: "" },
+  { id: "c6", grade: "ป.4", room: "1", male_count: 15, female_count: 14, teacher_name: "ครูตัวอย่าง", display_order: 401, created_at: "" },
+  { id: "c7", grade: "ป.5", room: "1", male_count: 14, female_count: 14, teacher_name: "ครูตัวอย่าง", display_order: 501, created_at: "" },
+  { id: "c8", grade: "ป.6", room: "1", male_count: 15, female_count: 15, teacher_name: "ครูตัวอย่าง", display_order: 601, created_at: "" },
+];
+
+export async function getClassrooms(): Promise<Classroom[]> {
+  const sb = getSupabase();
+  if (!sb) return FALLBACK_CLASSROOMS;
+  const { data } = await sb
+    .from("classrooms")
+    .select("*")
+    .order("display_order", { ascending: true });
+  const rows = (data as Classroom[]) ?? [];
+  return rows.length ? rows : FALLBACK_CLASSROOMS;
 }
 
 export async function getTeachers(): Promise<Teacher[]> {

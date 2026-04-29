@@ -6,6 +6,7 @@ import { useState } from "react";
 import {
   BookOpen,
   GalleryHorizontalEnd,
+  GraduationCap,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -20,6 +21,7 @@ const NAV = [
   { href: "/admin/dashboard", label: "ภาพรวม", icon: LayoutDashboard },
   { href: "/admin/news", label: "ข่าวสาร", icon: BookOpen },
   { href: "/admin/gallery", label: "ภาพกิจกรรม", icon: GalleryHorizontalEnd },
+  { href: "/admin/students", label: "ข้อมูลนักเรียน", icon: GraduationCap },
   { href: "/admin/teachers", label: "บุคลากร", icon: Users },
   { href: "/admin/settings", label: "ตั้งค่าเว็บ", icon: Settings },
 ];

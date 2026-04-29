@@ -2,14 +2,32 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { BookOpen, GalleryHorizontalEnd, Settings, Users } from "lucide-react";
+import {
+  BookOpen,
+  GalleryHorizontalEnd,
+  GraduationCap,
+  Settings,
+  Users,
+} from "lucide-react";
 import { getSupabase } from "@/lib/supabase";
 import { AdminCard, AdminPageTitle } from "@/components/admin/AdminCard";
 
-type Counts = { news: number; gallery: number; teachers: number };
+type Counts = {
+  news: number;
+  gallery: number;
+  teachers: number;
+  students: number;
+  rooms: number;
+};
 
 export default function DashboardPage() {
-  const [counts, setCounts] = useState<Counts>({ news: 0, gallery: 0, teachers: 0 });
+  const [counts, setCounts] = useState<Counts>({
+    news: 0,
+    gallery: 0,
+    teachers: 0,
+    students: 0,
+    rooms: 0,
+  });
 
   useEffect(() => {
     const sb = getSupabase();
@@ -18,16 +36,29 @@ export default function DashboardPage() {
       sb.from("news").select("*", { count: "exact", head: true }),
       sb.from("gallery").select("*", { count: "exact", head: true }),
       sb.from("teachers").select("*", { count: "exact", head: true }),
-    ]).then(([n, g, t]) => {
+      sb.from("classrooms").select("male_count,female_count"),
+    ]).then(([n, g, t, c]) => {
+      const rows = (c.data as { male_count: number; female_count: number }[]) ?? [];
+      const students = rows.reduce((s, r) => s + r.male_count + r.female_count, 0);
       setCounts({
         news: n.count ?? 0,
         gallery: g.count ?? 0,
         teachers: t.count ?? 0,
+        students,
+        rooms: rows.length,
       });
     });
   }, []);
 
   const SHORTCUTS = [
+    {
+      href: "/admin/students",
+      icon: GraduationCap,
+      label: `นักเรียน (${counts.rooms} ห้อง)`,
+      count: counts.students,
+      unit: "คน",
+      color: "from-amber-500 to-amber-700",
+    },
     {
       href: "/admin/news",
       icon: BookOpen,
@@ -65,7 +96,7 @@ export default function DashboardPage() {
   return (
     <>
       <AdminPageTitle title="ภาพรวม" sub="ยินดีต้อนรับสู่ Admin Panel โรงเรียนวัดบางขุด(อุ่นพิทยาคาร)" />
-      <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-5">
+      <div className="grid sm:grid-cols-2 xl:grid-cols-5 gap-5">
         {SHORTCUTS.map(({ href, icon: Icon, label, count, unit, color }) => (
           <Link key={href} href={href}>
             <AdminCard className="hover:border-gold-300/40 hover:-translate-y-1 hover:shadow-soft transition-all cursor-pointer">

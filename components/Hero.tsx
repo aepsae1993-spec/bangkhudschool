@@ -54,7 +54,7 @@ export default function Hero({
           initial={reduce ? {} : { opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-6 font-display text-4xl sm:text-5xl lg:text-7xl font-semibold leading-[1.1] max-w-4xl"
+          className="mt-6 font-sans text-4xl sm:text-5xl lg:text-7xl font-bold leading-[1.5] max-w-4xl py-2"
         >
           {(() => {
             const idx = schoolName.indexOf("(");

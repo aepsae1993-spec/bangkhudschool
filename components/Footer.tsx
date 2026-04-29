@@ -35,6 +35,7 @@ export default function Footer({ settings }: { settings: SiteSettings }) {
             <li><Link href="/about" className="hover:text-gold-200">เกี่ยวกับโรงเรียน</Link></li>
             <li><Link href="/news" className="hover:text-gold-200">ข่าวสาร</Link></li>
             <li><Link href="/gallery" className="hover:text-gold-200">ภาพกิจกรรม</Link></li>
+            <li><Link href="/students" className="hover:text-gold-200">ข้อมูลนักเรียน</Link></li>
             <li><Link href="/teachers" className="hover:text-gold-200">บุคลากร</Link></li>
             <li><Link href="/contact" className="hover:text-gold-200">ติดต่อ</Link></li>
           </ul>

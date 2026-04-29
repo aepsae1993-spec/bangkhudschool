@@ -151,7 +151,49 @@ create policy "teachers admin write" on public.teachers
 for all to authenticated using (true) with check (true);
 
 -- ============================================================
--- 6) ตัวอย่างข้อมูล (ลบได้ภายหลัง)
+-- 6) ตารางห้องเรียน / ข้อมูลนักเรียน (แต่ละห้อง)
+-- ============================================================
+create table if not exists public.classrooms (
+  id            uuid primary key default gen_random_uuid(),
+  grade         text not null,        -- 'อ.2','อ.3','ป.1','ป.2','ป.3','ป.4','ป.5','ป.6'
+  room          text not null,        -- '1','2','3'...
+  male_count    int  not null default 0,
+  female_count  int  not null default 0,
+  teacher_name  text,
+  display_order int  not null default 100,
+  created_at    timestamptz not null default now(),
+  unique (grade, room)
+);
+create index if not exists classrooms_order_idx on public.classrooms (display_order);
+
+alter table public.classrooms enable row level security;
+
+drop policy if exists "classrooms public read" on public.classrooms;
+create policy "classrooms public read" on public.classrooms
+for select to anon, authenticated using (true);
+
+drop policy if exists "classrooms admin write" on public.classrooms;
+create policy "classrooms admin write" on public.classrooms
+for all to authenticated using (true) with check (true);
+
+-- ตัวอย่างข้อมูลห้องเรียน (ลบ/แก้ได้)
+insert into public.classrooms (grade, room, male_count, female_count, teacher_name, display_order) values
+  ('อ.2','1', 12, 13, 'นางสาว ก. ตัวอย่าง', 21),
+  ('อ.2','2', 11, 14, 'นาง ข. ตัวอย่าง', 22),
+  ('อ.3','1', 13, 12, 'นางสาว ค. ตัวอย่าง', 31),
+  ('อ.3','2', 12, 13, 'นาง ง. ตัวอย่าง', 32),
+  ('ป.1','1', 15, 14, 'นางสาว จ. ตัวอย่าง', 101),
+  ('ป.1','2', 14, 15, 'นาง ฉ. ตัวอย่าง', 102),
+  ('ป.2','1', 13, 14, 'นาง ช. ตัวอย่าง', 201),
+  ('ป.2','2', 14, 13, 'นางสาว ซ. ตัวอย่าง', 202),
+  ('ป.3','1', 14, 13, 'นาง ฌ. ตัวอย่าง', 301),
+  ('ป.4','1', 15, 14, 'นาย ญ. ตัวอย่าง', 401),
+  ('ป.5','1', 14, 14, 'นางสาว ฎ. ตัวอย่าง', 501),
+  ('ป.6','1', 15, 15, 'นาง ฏ. ตัวอย่าง', 601)
+on conflict (grade, room) do nothing;
+
+-- ============================================================
+-- 7) ตัวอย่างข้อมูล (ลบได้ภายหลัง)
 -- ============================================================
 insert into public.news (slug, title, excerpt, category, published_at) values
   ('welcome-2026', 'เปิดภาคเรียนปีการศึกษา 2569',

@@ -4,7 +4,7 @@ import NewsCard from "@/components/NewsCard";
 import Reveal from "@/components/Reveal";
 import SectionTitle from "@/components/SectionTitle";
 import StatCard from "@/components/StatCard";
-import { getNews, getSettings } from "@/lib/data";
+import { getClassrooms, getNews, getSettings, getTeachers } from "@/lib/data";
 import {
   ArrowRight,
   BookOpen,
@@ -51,7 +51,17 @@ const FEATURES = [
 ];
 
 export default async function HomePage() {
-  const [settings, news] = await Promise.all([getSettings(), getNews(6)]);
+  const [settings, news, classrooms, teachers] = await Promise.all([
+    getSettings(),
+    getNews(6),
+    getClassrooms(),
+    getTeachers(),
+  ]);
+
+  const totalStudents = classrooms.reduce(
+    (s, c) => s + c.male_count + c.female_count,
+    0
+  );
 
   return (
     <>
@@ -65,8 +75,8 @@ export default async function HomePage() {
       <section className="container-x py-20 md:py-24">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
           <StatCard value={60} suffix="+" label="ปีแห่งการพัฒนา" />
-          <StatCard value={420} label="นักเรียนปัจจุบัน" delay={0.1} />
-          <StatCard value={32} label="ครูและบุคลากร" delay={0.2} />
+          <StatCard value={totalStudents} label="นักเรียนปัจจุบัน" delay={0.1} />
+          <StatCard value={teachers.length} label="ครูและบุคลากร" delay={0.2} />
           <StatCard value={100} suffix="%" label="ใส่ใจทุกคน" delay={0.3} />
         </div>
       </section>
