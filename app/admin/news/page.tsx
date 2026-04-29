@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Edit2, Plus, Trash2, X } from "lucide-react";
 import { getSupabase } from "@/lib/supabase";
 import type { NewsItem } from "@/lib/types";
+import { NEWS_CATEGORIES } from "@/lib/categories";
 import {
   AdminCard,
   AdminPageTitle,
@@ -193,7 +194,23 @@ export default function AdminNewsPage() {
             <div className="grid md:grid-cols-2 gap-4">
               <FormInput label="หัวข่าว *" value={form.title} onChange={(e) => set("title", e.target.value)} required />
               <FormInput label="Slug (URL)" value={form.slug} onChange={(e) => set("slug", e.target.value)} required hint="ใช้ตัวเล็ก ไม่มีเว้นวรรค เช่น sports-day-2569" />
-              <FormInput label="หมวดหมู่" value={form.category} onChange={(e) => set("category", e.target.value)} placeholder="ประกาศ / กิจกรรม / รางวัล" />
+              <div>
+                <label className="block text-sm text-cream-100/80 mb-1.5">หมวดหมู่ *</label>
+                <select
+                  value={form.category}
+                  onChange={(e) => set("category", e.target.value)}
+                  required
+                  className="w-full rounded-xl bg-ink-800/60 border border-white/10 px-4 py-2.5 text-sm text-cream-100 focus:outline-none focus:border-gold-300/60 focus:bg-ink-800 transition"
+                >
+                  <option value="">— เลือกหมวด —</option>
+                  {NEWS_CATEGORIES.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+                <span className="mt-1 text-xs text-cream-100/50 block">
+                  เพิ่ม/ลบหมวดได้ที่ <code className="text-gold-200/70">lib/categories.ts</code>
+                </span>
+              </div>
               <FormInput label="วันที่เผยแพร่" type="date" value={form.published_at} onChange={(e) => set("published_at", e.target.value)} />
             </div>
             <FormTextarea label="ข้อความย่อ (excerpt)" value={form.excerpt} onChange={(e) => set("excerpt", e.target.value)} rows={2} placeholder="สรุปสั้น ๆ ของข่าว..." />

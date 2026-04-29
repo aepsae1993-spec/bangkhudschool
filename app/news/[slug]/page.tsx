@@ -4,7 +4,8 @@ import { ArrowLeft, CalendarDays } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import { getNewsBySlug } from "@/lib/data";
 
-export const revalidate = 60;
+// ดึงสด ๆ ทุกครั้ง — ป้องกันปัญหา 404 ตอนสร้างข่าวใหม่ที่ slug ยังไม่อยู่ใน static cache
+export const dynamic = "force-dynamic";
 
 const fmt = (d: string) =>
   new Date(d).toLocaleDateString("th-TH", {
