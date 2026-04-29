@@ -37,6 +37,7 @@ export default function NewsCard({
           <img
             src={item.cover_url}
             alt={item.title}
+            style={{ objectPosition: item.cover_position || "top" }}
             className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
           />
         ) : (

@@ -39,12 +39,14 @@ export default async function NewsDetail({
       />
       <article className="container-x py-16 max-w-3xl">
         {item.cover_url && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={item.cover_url}
-            alt={item.title}
-            className="w-full rounded-3xl mb-10 object-cover aspect-[16/9]"
-          />
+          <div className="mb-10 rounded-3xl overflow-hidden bg-ink-900/60 border border-white/5 ring-1 ring-gold-300/10 flex items-center justify-center">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={item.cover_url}
+              alt={item.title}
+              className="w-full max-h-[75vh] object-contain"
+            />
+          </div>
         )}
         <div className="flex items-center gap-2 text-sm text-cream-100/60 mb-8">
           <CalendarDays size={16} />

@@ -5,6 +5,7 @@ export type NewsItem = {
   excerpt: string | null;
   content: string | null;
   cover_url: string | null;
+  cover_position: string | null; // 'top' | 'center' | 'bottom' | 'top left' | ...
   category: string | null;
   published_at: string;
   created_at: string;

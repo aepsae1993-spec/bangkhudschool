@@ -80,16 +80,19 @@ for all to authenticated using (true) with check (true);
 -- 3) ตารางข่าวสาร
 -- ============================================================
 create table if not exists public.news (
-  id            uuid primary key default gen_random_uuid(),
-  slug          text unique not null,
-  title         text not null,
-  excerpt       text,
-  content       text,
-  cover_url     text,           -- ใช้ Drive URL หรือ Supabase Storage
-  category      text,
-  published_at  date not null default current_date,
-  created_at    timestamptz not null default now()
+  id              uuid primary key default gen_random_uuid(),
+  slug            text unique not null,
+  title           text not null,
+  excerpt         text,
+  content         text,
+  cover_url       text,           -- ใช้ Drive URL หรือ Supabase Storage
+  cover_position  text default 'top',  -- focal point ของ thumbnail (เช่น 'top','center','bottom','top left')
+  category        text,
+  published_at    date not null default current_date,
+  created_at      timestamptz not null default now()
 );
+-- เพิ่มคอลัมน์ถ้ายังไม่มี (สำหรับ DB ที่สร้างก่อนหน้านี้)
+alter table public.news add column if not exists cover_position text default 'top';
 create index if not exists news_published_idx on public.news (published_at desc);
 
 alter table public.news enable row level security;

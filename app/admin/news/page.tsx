@@ -15,17 +15,39 @@ import {
   Toast,
 } from "@/components/admin/AdminCard";
 
-const EMPTY_FORM = {
+type Form = {
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  cover_url: string;
+  cover_position: string;
+  category: string;
+  published_at: string;
+};
+
+const EMPTY_FORM: Form = {
   title: "",
   slug: "",
   excerpt: "",
   content: "",
   cover_url: "",
+  cover_position: "top",
   category: "",
   published_at: new Date().toISOString().split("T")[0],
 };
 
-type Form = typeof EMPTY_FORM;
+const POSITIONS: { val: string; label: string }[] = [
+  { val: "top left", label: "บน-ซ้าย" },
+  { val: "top", label: "บน" },
+  { val: "top right", label: "บน-ขวา" },
+  { val: "left", label: "กลาง-ซ้าย" },
+  { val: "center", label: "กลาง" },
+  { val: "right", label: "กลาง-ขวา" },
+  { val: "bottom left", label: "ล่าง-ซ้าย" },
+  { val: "bottom", label: "ล่าง" },
+  { val: "bottom right", label: "ล่าง-ขวา" },
+];
 
 function makeSlug(title: string) {
   return (
@@ -85,6 +107,7 @@ export default function AdminNewsPage() {
       excerpt: item.excerpt ?? "",
       content: item.content ?? "",
       cover_url: item.cover_url ?? "",
+      cover_position: item.cover_position ?? "top",
       category: item.category ?? "",
       published_at: item.published_at.slice(0, 10),
     });
@@ -200,9 +223,55 @@ export default function AdminNewsPage() {
                 placeholder="https://... หรือกดอัปโหลดด้านบน"
                 className="w-full rounded-xl bg-ink-800/60 border border-white/10 px-4 py-2.5 text-sm text-cream-100 placeholder-cream-100/30 focus:outline-none focus:border-gold-300/60 transition"
               />
+
               {form.cover_url && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={form.cover_url} alt="preview" className="mt-2 h-32 rounded-xl object-cover" />
+                <div className="mt-4 grid md:grid-cols-[auto,1fr] gap-5 items-start">
+                  {/* Focal point 3x3 picker */}
+                  <div>
+                    <div className="text-xs text-cream-100/70 mb-2">
+                      ตำแหน่งโฟกัสของ thumbnail
+                    </div>
+                    <div className="grid grid-cols-3 gap-1.5 w-32 aspect-square p-1.5 bg-ink-800/60 rounded-xl border border-white/10">
+                      {POSITIONS.map((p) => {
+                        const active = form.cover_position === p.val;
+                        return (
+                          <button
+                            key={p.val}
+                            type="button"
+                            title={p.label}
+                            onClick={() => set("cover_position", p.val)}
+                            className={`rounded-md transition-all ${
+                              active
+                                ? "bg-gold-400 shadow-glow scale-110"
+                                : "bg-white/10 hover:bg-white/25"
+                            }`}
+                          />
+                        );
+                      })}
+                    </div>
+                    <div className="text-[11px] text-gold-300/80 mt-2 text-center">
+                      {POSITIONS.find((p) => p.val === form.cover_position)?.label ?? "—"}
+                    </div>
+                  </div>
+
+                  {/* Live preview - same crop as the actual NewsCard */}
+                  <div>
+                    <div className="text-xs text-cream-100/70 mb-2">
+                      ดูตัวอย่าง thumbnail (รูปจะแสดงแบบนี้ในรายการข่าว)
+                    </div>
+                    <div className="relative h-44 w-full rounded-2xl overflow-hidden bg-ink-800 border border-white/10">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={form.cover_url}
+                        alt="preview"
+                        style={{ objectPosition: form.cover_position }}
+                        className="h-full w-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-ink-950/60 via-transparent to-transparent pointer-events-none" />
+                      <span className="absolute top-2 left-2 chip">ตัวอย่าง</span>
+                    </div>
+                  </div>
+                </div>
               )}
             </div>
 
